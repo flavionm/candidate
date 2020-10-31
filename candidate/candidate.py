@@ -1,5 +1,5 @@
 '''Searchs for the candidates to be selected by the SMAPH algorithm'''
-import googlesearch
+import websearch
 
 
 def main(initial_query):
@@ -9,7 +9,7 @@ def main(initial_query):
 
 def create_set_1(query):
     '''Creates set containing Wikipedia links from query result'''
-    correction, results = googlesearch.search(query)
+    correction, results = websearch.search(query)
     print(correction)
     print()
     for result in results[0:5]:
