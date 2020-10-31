@@ -1,6 +1,6 @@
 '''Searchs for the candidates to be selected by the SMAPH algorithm'''
-import websearch
 import annotator
+import websearch
 
 
 def main(initial_query):

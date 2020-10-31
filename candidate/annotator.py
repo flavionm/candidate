@@ -46,7 +46,6 @@ def wat_entity_linking(text):
                 "ranker:model=0046.model,confidence:model=pruner-wiki.linear")]
 
     response = requests.get(wat_url, params=payload)
-    # print(json.dumps(response.json(), indent=4))
     return [WATAnnotation(a) for a in response.json()['annotations']]
 
 
