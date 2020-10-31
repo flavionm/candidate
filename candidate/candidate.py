@@ -1,5 +1,6 @@
 '''Searchs for the candidates to be selected by the SMAPH algorithm'''
 import websearch
+import annotator
 
 
 def main(initial_query):
@@ -10,15 +11,16 @@ def main(initial_query):
 def create_set_1(query):
     '''Creates set containing Wikipedia links from query result'''
     correction, results = websearch.search(query)
-    print(correction)
+    list_query = correction.split()
+    print(list_query)
     print()
-    for result in results[0:5]:
-        print('link: ' + result[0])
-        print('title: ' + result[1])
-        print('description: ' + result[2])
+    for result in results[0:3]:
+        print(result[2])
+        annotations = annotator.wat_entity_linking(result[2])
+        for annotation in annotations:
+            annotation.print_wat_annotation()
         print()
 
 
-
 if __name__ == '__main__':
-    main('carlos aberto de noberga')
+    main('barak obama iram bombing')

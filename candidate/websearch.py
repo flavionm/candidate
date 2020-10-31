@@ -10,9 +10,7 @@ def search(term):
                       '(KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 
     def fetch_results(search_term):
-        escaped_search_term = search_term.replace(' ', '+')
-
-        ddg_url = 'https://duckduckgo.com/html/?q={}&s=1&o=json'.format(escaped_search_term)
+        ddg_url = 'https://html.duckduckgo.com/html/?q={}&kl=us-en'.format(search_term)
         response = get(ddg_url, headers=usr_agent)
         response.raise_for_status()
 
@@ -24,15 +22,11 @@ def search(term):
         correction = ''
         if suggestion is not None:
             correction = suggestion.find('a', href=True).text
-            # print('correction: ' + str(correction.text) + '\n')
         result_block = soup.find_all('div', attrs={'class': 'result'})
         results = []
         for result in result_block:
             link = result.find('a', href=True, attrs={'rel': 'nofollow'})
-            # print('link: ' + str(link['href']) + '\n')
-            # print('title: ' + str(link.text) + '\n')
             description = result.find('a', href=True, attrs={'class': 'result__snippet'})
-            # print('description: ' + str(description.text) + '\n')
             results.append((link['href'], link.text, description.text))
         return correction, results
 
