@@ -27,11 +27,11 @@ def _annotate_excerpts(query, results, correction, tries):
     for result in results[0:tries]:
         annotations = annotator.wat_entity_linking(result[2])
         for annotation in annotations:
-            entity = annotation['spot'].lower()
-            if entity in entities:
-                mappings = entity_mappings[name_map[entity]]
-                mappings[annotation['wiki_title']] = mappings.get(
-                    annotation['wiki_title'], 0) + 1
+            for entity in annotation['spot'].lower().split():
+                if entity in entities:
+                    mappings = entity_mappings[name_map[entity]]
+                    mappings[annotation['wiki_title']] = mappings.get(
+                        annotation['wiki_title'], 0) + 1
     return entity_mappings
 
 
