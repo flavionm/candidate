@@ -7,6 +7,7 @@ def _examples():
     _test('Armstrong mon lading')
     _test('Barak Obama iram bombing', 15)
     _test('Socialism vs communism', 5)
+    _test('WAT api token')
 
 
 def _test(query, tries=0):

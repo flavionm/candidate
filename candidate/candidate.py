@@ -15,8 +15,9 @@ def annotate_query(query, tries=10):
     correction, results = websearch.search(query)
     entity_mappings = _annotate_excerpts(query, results, correction, tries)
 
-    annotations = _select_annotations(entity_mappings, tries//5)
-    return annotations
+    annotations = _select_annotations(entity_mappings)
+    merged_annotations = _merge(annotations)
+    return merged_annotations
 
 
 def _annotate_excerpts(query, results, correction, tries):
@@ -35,21 +36,34 @@ def _annotate_excerpts(query, results, correction, tries):
     return entity_mappings
 
 
-def _select_annotations(entity_mappings, min_weight):
+def _select_annotations(entity_mappings):
     annotations = []
     for entity in entity_mappings.keys():
         mappings = entity_mappings[entity]
         best_match = ''
-        weight = min_weight - 1
+        weight = 0
         for title in mappings.keys():
             if mappings[title] > weight:
                 best_match = title
                 weight = mappings[title]
-        if weight >= min_weight:
-            annotations.append(
-                (entity, f'https://en.wikipedia.org/wiki/{best_match}', weight))
-        else:
-            annotations.append((entity, '', 0))
+        annotations.append(
+            (entity, best_match, weight))
+    return annotations
+
+
+def _merge(annotations):
+    for i, primary_annotation in enumerate(annotations):
+        entity, link, weight = primary_annotation
+        for j, secondary_annotation in enumerate(annotations[i+1:]):
+            if link!= '' and link == secondary_annotation[1]:
+                entity += f' {secondary_annotation[0]}'
+                if weight > secondary_annotation[2]:
+                    weight = secondary_annotation[2]
+                del annotations[j]
+            else:
+                break
+        annotations[i] = (entity, primary_annotation[1], weight)
+
     return annotations
 
 
@@ -57,7 +71,8 @@ def print_annotations(annotations):
     '''Prints the annotation list'''
     for annotation in annotations:
         if annotation[2] > 1:
-            print(f'{annotation[0]}: {annotation[1]} ({annotation[2]})')
+            print(f'{annotation[0]}: https://en.wikipedia.org/wiki/{annotation[1]} '
+                  f'({annotation[2]})')
         else:
             print(f'{annotation[0]}: (0)')
 
