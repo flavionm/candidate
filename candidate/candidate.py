@@ -8,9 +8,9 @@ import websearch
 def annotate_query(query, tries=10):
     '''Annotates que given query string'''
     if query == '':
-        raise RuntimeError("query can't be empty")
+        raise RuntimeError("Query can't be empty")
     if tries < 5:
-        raise RuntimeError("tries can't be lower than 5")
+        raise RuntimeError("Tries can't be lower than 5")
 
     correction, results = websearch.search(query)
     entity_mappings = _annotate_excerpts(query, results, correction, tries)
@@ -63,9 +63,15 @@ def print_annotations(annotations):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Missing query')
-    elif len(sys.argv) > 2:
-        print('Too many arguments')
-    else:
-        print_annotations(annotate_query(sys.argv[1]))
+    try:
+        ARGS_NUM = len(sys.argv)
+        if ARGS_NUM < 2:
+            print('Missing query')
+        elif ARGS_NUM == 2:
+            print_annotations(annotate_query(sys.argv[1]))
+        elif ARGS_NUM == 3:
+            print_annotations(annotate_query(sys.argv[1], int(sys.argv[2])))
+        else:
+            print('Too many arguments')
+    except RuntimeError as error:
+        print(str(error))
