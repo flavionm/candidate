@@ -1,26 +1,71 @@
 '''Searchs for the candidates to be selected by the SMAPH algorithm'''
+import sys
+
 import annotator
 import websearch
 
 
-def main(initial_query):
-    '''Starting function'''
-    create_set_1(initial_query)
+def annotate_query(query, tries=10):
+    '''Annotates que given query string'''
+    if query == '':
+        raise RuntimeError("query can't be empty")
+    if tries < 5:
+        raise RuntimeError("tries can't be lower than 5")
 
-
-def create_set_1(query):
-    '''Creates set containing Wikipedia links from query result'''
     correction, results = websearch.search(query)
-    list_query = correction.split()
-    print(list_query)
-    print()
-    for result in results[0:3]:
-        print(result[2])
+    entity_mappings = _annotate_excerpts(query, results, correction, tries)
+
+    annotations = _select_annotations(entity_mappings, tries//5)
+    return annotations
+
+
+def _annotate_excerpts(query, results, correction, tries):
+    entities = [entity.lower() for entity in correction.split()]
+    query_entities = query.split()
+    name_map = {entity: query_entities[i] for i, entity in enumerate(entities)}
+    entity_mappings = {name_map[entity]: {} for entity in entities}
+    for result in results[0:tries]:
         annotations = annotator.wat_entity_linking(result[2])
         for annotation in annotations:
-            annotation.print_wat_annotation()
-        print()
+            entity = annotation['spot'].lower()
+            if entity in entities:
+                mappings = entity_mappings[name_map[entity]]
+                mappings[annotation['wiki_title']] = mappings.get(
+                    annotation['wiki_title'], 0) + 1
+    return entity_mappings
+
+
+def _select_annotations(entity_mappings, min_weight):
+    annotations = []
+    for entity in entity_mappings.keys():
+        mappings = entity_mappings[entity]
+        best_match = ''
+        weight = min_weight - 1
+        for title in mappings.keys():
+            if mappings[title] > weight:
+                best_match = title
+                weight = mappings[title]
+        if weight >= min_weight:
+            annotations.append(
+                (entity, f'https://en.wikipedia.org/wiki/{best_match}', weight))
+        else:
+            annotations.append((entity, '', 0))
+    return annotations
+
+
+def print_annotations(annotations):
+    '''Prints the annotation list'''
+    for annotation in annotations:
+        if annotation[2] > 1:
+            print(f'{annotation[0]}: {annotation[1]} ({annotation[2]})')
+        else:
+            print(f'{annotation[0]}: (0)')
 
 
 if __name__ == '__main__':
-    main('barak obama iram bombing')
+    if len(sys.argv) < 2:
+        print('Missing query')
+    elif len(sys.argv) > 2:
+        print('Too many arguments')
+    else:
+        print_annotations(annotate_query(sys.argv[1]))

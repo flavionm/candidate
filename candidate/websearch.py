@@ -5,12 +5,13 @@ from bs4 import BeautifulSoup
 
 def search(term):
     '''Searches and parses the resulting html'''
-    html = fetch_results(term)
-    return parse_results(html)
+    html = _fetch_results(term)
+    correction, results = _parse_results(html)
+    if correction == '':
+        return term, results
+    return correction, results
 
-
-def fetch_results(search_term):
-    '''Gets the response from the search engine'''
+def _fetch_results(search_term):
     usr_agent = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                  '(KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
     ddg_url = 'https://html.duckduckgo.com/html/?q={}&kl=us-en'.format(
@@ -22,8 +23,7 @@ def fetch_results(search_term):
     return response.text
 
 
-def parse_results(raw_html):
-    '''Parses the HTML for relevant resources'''
+def _parse_results(raw_html):
     soup = BeautifulSoup(raw_html, 'html.parser')
     suggestion = soup.find('div', attrs={'id': 'did_you_mean'})
     correction = ''
