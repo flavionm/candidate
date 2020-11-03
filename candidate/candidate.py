@@ -71,10 +71,7 @@ def print_annotations(annotations):
     '''Prints the annotation list'''
     for annotation in annotations:
         if annotation[2] > 1:
-            print(f'{annotation[0]}: https://en.wikipedia.org/wiki/{annotation[1]} '
-                  f'({annotation[2]})')
-        else:
-            print(f'{annotation[0]}: (0)')
+            print(f'{annotation[0]}: https://en.wikipedia.org/wiki/{annotation[1]}')
 
 
 if __name__ == '__main__':

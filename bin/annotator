@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../env/bin/activate
+python3 $DIR/../candidate/candidate.py "$1" $2
