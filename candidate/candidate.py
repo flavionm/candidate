@@ -54,12 +54,12 @@ def _select_annotations(entity_mappings):
 def _merge(annotations):
     for i, primary_annotation in enumerate(annotations):
         entity, link, weight = primary_annotation
-        for j, secondary_annotation in enumerate(annotations[i+1:]):
-            if link!= '' and link == secondary_annotation[1]:
+        for secondary_annotation in annotations[i+1:]:
+            if link != '' and link == secondary_annotation[1]:
                 entity += f' {secondary_annotation[0]}'
                 if weight > secondary_annotation[2]:
                     weight = secondary_annotation[2]
-                del annotations[j]
+                del annotations[i+1]
             else:
                 break
         annotations[i] = (entity, primary_annotation[1], weight)
