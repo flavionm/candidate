@@ -5,14 +5,19 @@ import candidate
 
 def _examples():
     _test('Armstrong mon lading')
-    _test('Barak Obama iram bombing', 15)
-    _test('Socialism vs communism', 5)
+    _test('Barak Obama mandate lenght', 15)
+    _test('best cheap cat food', 5)
     _test('WAT api token')
+    _test('seven wonders of the world')
 
 
 def _test(query, tries=0):
+    print(f'Query: {query}')
+    print()
+    print('SMAPH-like')
     _test_custom(query, tries)
     print()
+    print('WAT')
     _test_wat(query)
     print()
     print()
@@ -29,7 +34,8 @@ def _test_custom(query, tries):
 def _test_wat(query):
     wat_annotations = annotator.wat_entity_linking(query)
     for note in wat_annotations:
-        print(f'{note["spot"]}: https://en.wikipedia.org/wiki/{note["wiki_title"]}')
+        print(
+            f'{note["spot"]}: https://en.wikipedia.org/wiki/{note["wiki_title"]}')
 
 
 if __name__ == "__main__":
