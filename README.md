@@ -1,2 +1,2 @@
 # candidate
-Generation of a set of candidates for the SMAPH algorithm.
+Trabalho final de Recuperação da Informação.
