@@ -12,6 +12,16 @@ def _examples():
           'api -> Application_programming_interface, token -> Access_token,')
     _test('seven wonders of the world',
           'seven wonders of the world -> Seven_Wonders_of_the_Ancient_World,')
+    _test('metronome setting of allegro',
+          'metronome -> Metronome, allegro -> Tempo,')
+    _test('c book default',
+          'c book -> C (programming language), default -> Default_(computer_science),')
+    _test('large company payroll service providers',
+          'large company -> Big_business, service providers -> Service_provider,')
+    _test('optimizer programming in animal feeding',
+          'optimizer -> Mathematical_optimization, animal feeding -> Animal_feed,')
+    _test('photos of starry night',
+          'photos -> Photograph, starry -> Star, night -> Night,')
 
 
 def _test(query, truth, tries=0):
@@ -37,7 +47,7 @@ def _test_wat(query):
     wat_annotations = annotator.wat_entity_linking(query)
     for note in wat_annotations:
         print(
-            f'{note["spot"]} -> {note["wiki_title"]}', end=',')
+            f'{note["spot"]} -> {note["wiki_title"]}', end=', ')
     print()
 
 
